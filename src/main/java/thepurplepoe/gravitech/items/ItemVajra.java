@@ -9,7 +9,9 @@ import javax.annotation.Nullable;
 import ic2.api.item.ElectricItem;
 import ic2.core.IC2;
 import ic2.core.init.Localization;
+import ic2.core.item.tool.HarvestLevel;
 import ic2.core.item.tool.ItemElectricTool;
+import ic2.core.item.tool.ToolClass;
 import ic2.core.util.StackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +51,7 @@ extends ItemElectricTool {
     public static boolean accurateEnabled = true;
 
     public ItemVajra(String name) {
-        super(null, 3333, ItemElectricTool.HarvestLevel.Iridium, EnumSet.of(ItemElectricTool.ToolClass.Pickaxe, ItemElectricTool.ToolClass.Shovel, ItemElectricTool.ToolClass.Axe));
+        super(null, 3333, HarvestLevel.Iridium, EnumSet.of(ToolClass.Pickaxe, ToolClass.Shovel, ToolClass.Axe));
         itemName = name;
         this.maxCharge = 10000000;
         this.transferLimit = 60000;

@@ -12,7 +12,9 @@ import com.google.common.collect.Multimap;
 import ic2.api.item.ElectricItem;
 import ic2.core.IC2;
 import ic2.core.init.Localization;
+import ic2.core.item.tool.HarvestLevel;
 import ic2.core.item.tool.ItemElectricTool;
+import ic2.core.item.tool.ToolClass;
 import ic2.core.ref.ItemName;
 import ic2.core.util.StackUtil;
 import net.minecraft.block.Block;
@@ -55,7 +57,7 @@ extends ItemElectricTool {
 	public String itemName;
 
     public ItemAdvancedChainsaw(String name) {
-        super(null, 100, ItemElectricTool.HarvestLevel.Iron, EnumSet.of(ItemElectricTool.ToolClass.Axe, ItemElectricTool.ToolClass.Sword, ItemElectricTool.ToolClass.Shears));
+        super(null, 100, HarvestLevel.Iron, EnumSet.of(ToolClass.Axe, ToolClass.Sword, ToolClass.Shears));
         this.setRegistryName(name);
         this.setUnlocalizedName(name);
         itemName = name;

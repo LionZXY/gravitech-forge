@@ -10,6 +10,7 @@ import com.google.common.base.CaseFormat;
 
 import ic2.core.IC2;
 import ic2.core.init.Localization;
+import ic2.core.item.tool.HarvestLevel;
 import ic2.core.item.tool.ItemDrill;
 import ic2.core.item.tool.ItemElectricTool;
 import ic2.core.ref.ItemName;
@@ -43,32 +44,32 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import thepurplepoe.gravitech.Gravitech;
 
 public class ItemAdvancedDrill
-extends ItemDrill {
-	public String itemName;
+        extends ItemDrill {
+    public String itemName;
     protected static final Material[] MATERIALS = new Material[]{Material.ROCK, Material.GRASS, Material.GROUND, Material.SAND, Material.CLAY};
 
     public ItemAdvancedDrill(String name) {
-        super(null, 160, ItemElectricTool.HarvestLevel.Iridium, 45000, 500, 2, DrillMode.NORMAL.drillSpeed);
+        super(null, 160, HarvestLevel.Iridium, 45000, 500, 2, DrillMode.NORMAL.drillSpeed);
         itemName = name;
         this.setRegistryName(name);
         this.setUnlocalizedName(name);
     }
 
-    @SideOnly(value=Side.CLIENT)
+    @SideOnly(value = Side.CLIENT)
     public void registerModels() {
-        ModelLoader.setCustomModelResourceLocation((Item)this, (int)0, (ModelResourceLocation)new ModelResourceLocation("gravitech:" + CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "advancedDrill"), null));
+        ModelLoader.setCustomModelResourceLocation((Item) this, (int) 0, (ModelResourceLocation) new ModelResourceLocation("gravitech:" + CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "advancedDrill"), null));
     }
 
     public static DrillMode readDrillMode(ItemStack stack) {
-        return DrillMode.getFromID(StackUtil.getOrCreateNbtData((ItemStack)stack).getInteger("toolMode"));
+        return DrillMode.getFromID(StackUtil.getOrCreateNbtData((ItemStack) stack).getInteger("toolMode"));
     }
 
     public static DrillMode readNextDrillMode(ItemStack stack) {
-        return DrillMode.getFromID(StackUtil.getOrCreateNbtData((ItemStack)stack).getInteger("toolMode") + 1);
+        return DrillMode.getFromID(StackUtil.getOrCreateNbtData((ItemStack) stack).getInteger("toolMode") + 1);
     }
 
     public static void saveDrillMode(ItemStack stack, DrillMode mode) {
-        StackUtil.getOrCreateNbtData((ItemStack)stack).setInteger("toolMode", mode.ordinal());
+        StackUtil.getOrCreateNbtData((ItemStack) stack).setInteger("toolMode", mode.ordinal());
     }
 
     public String getUnlocalizedName() {
@@ -78,14 +79,15 @@ extends ItemDrill {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         if (IC2.keyboard.isModeSwitchKeyDown(playerIn)) {
             if (!worldIn.isRemote) {
-            	ItemStack stack = playerIn.getHeldItem(handIn);
+                ItemStack stack = playerIn.getHeldItem(handIn);
                 DrillMode mode = ItemAdvancedDrill.readNextDrillMode(stack);
                 ItemAdvancedDrill.saveDrillMode(stack, mode);
                 Gravitech.messagePlayer(playerIn, "gravitech.advancedDrill.mode", mode.colour, mode.translationName);
                 this.efficiency = mode.drillSpeed;
                 this.operationEnergyCost = mode.energyCost;
             }
-            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));        }
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        }
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
@@ -127,7 +129,7 @@ extends ItemDrill {
 
     protected static boolean canBlockBeMined(World world, BlockPos pos, EntityPlayer player, boolean skipEffectivity) {
         IBlockState state = world.getBlockState(pos);
-        return state.getBlock().canHarvestBlock((IBlockAccess)world, pos, player) && (skipEffectivity || ItemAdvancedDrill.isEffective(state.getMaterial())) && state.getPlayerRelativeBlockHardness(player, world, pos) != 0.0f;
+        return state.getBlock().canHarvestBlock((IBlockAccess) world, pos, player) && (skipEffectivity || ItemAdvancedDrill.isEffective(state.getMaterial())) && state.getPlayerRelativeBlockHardness(player, world, pos) != 0.0f;
     }
 
     protected static boolean isEffective(Material material) {
@@ -143,7 +145,7 @@ extends ItemDrill {
             World world = player.world;
             if (!world.isRemote) {
                 Collection<BlockPos> blocks = ItemAdvancedDrill.getBrokenBlocks(player, this.rayTrace(world, player, true));
-                if (!blocks.contains((Object)pos) && ItemAdvancedDrill.canBlockBeMined(world, pos, player, true)) {
+                if (!blocks.contains((Object) pos) && ItemAdvancedDrill.canBlockBeMined(world, pos, player, true)) {
                     blocks.add(pos);
                 }
                 boolean powerRanOut = false;
@@ -155,9 +157,10 @@ extends ItemDrill {
                         powerRanOut = true;
                         break;
                     }
-                    if (!world.isBlockLoaded(blockPos) || (block = (state = world.getBlockState(blockPos)).getBlock()).isAir(state, (IBlockAccess)world, blockPos)) continue;
+                    if (!world.isBlockLoaded(blockPos) || (block = (state = world.getBlockState(blockPos)).getBlock()).isAir(state, (IBlockAccess) world, blockPos))
+                        continue;
                     if (player instanceof EntityPlayerMP) {
-                        experience = ForgeHooks.onBlockBreakEvent((World)world, (GameType)((EntityPlayerMP)player).interactionManager.getGameType(), (EntityPlayerMP)((EntityPlayerMP)player), (BlockPos)blockPos);
+                        experience = ForgeHooks.onBlockBreakEvent((World) world, (GameType) ((EntityPlayerMP) player).interactionManager.getGameType(), (EntityPlayerMP) ((EntityPlayerMP) player), (BlockPos) blockPos);
                         if (experience < 0) {
                             return false;
                         }
@@ -179,8 +182,8 @@ extends ItemDrill {
                         }
                         stack.onBlockDestroyed(world, state, blockPos, player);
                     }
-                    world.playEvent(2001, blockPos, Block.getStateId((IBlockState)state));
-                    ((EntityPlayerMP)player).connection.sendPacket((Packet)new SPacketBlockChange(world, blockPos));
+                    world.playEvent(2001, blockPos, Block.getStateId((IBlockState) state));
+                    ((EntityPlayerMP) player).connection.sendPacket((Packet) new SPacketBlockChange(world, blockPos));
                 }
                 if (powerRanOut) {
                     IC2.platform.messagePlayer(player, "gravitech.advancedDrill.ranOut", new Object[0]);
@@ -195,10 +198,52 @@ extends ItemDrill {
         return EnumRarity.UNCOMMON;
     }
 
-    @SideOnly(value=Side.CLIENT)
+    @SideOnly(value = Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-    	super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add((Object)TextFormatting.GOLD + Localization.translate((String)"gravitech.advancedDrill.mode", (Object[])new Object[]{new StringBuilder().append((Object)TextFormatting.WHITE).append(Localization.translate((String)ItemAdvancedDrill.readDrillMode((ItemStack)stack).translationName)).toString()}));
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add((Object) TextFormatting.GOLD + Localization.translate((String) "gravitech.advancedDrill.mode", (Object[]) new Object[]{new StringBuilder().append((Object) TextFormatting.WHITE).append(Localization.translate((String) ItemAdvancedDrill.readDrillMode((ItemStack) stack).translationName)).toString()}));
+    }
+
+    public int energyUse(ItemStack stack, World world, BlockPos pos, IBlockState state) {
+        if (stack.getItem() == ItemName.drill.getInstance()) {
+            return 6;
+        } else if (stack.getItem() == ItemName.diamond_drill.getInstance()) {
+            return 20;
+        } else if (stack.getItem() == ItemName.iridium_drill.getInstance()) {
+            return 200;
+        } else if (stack.getItem() == GravitechItems.advancedDrill) {
+            return 300;
+        } else {
+            throw new IllegalArgumentException("Invalid drill: " + StackUtil.toStringSafe(stack));
+        }
+    }
+
+    public int breakTime(ItemStack stack, World world, BlockPos pos, IBlockState state) {
+        if (stack.getItem() == ItemName.drill.getInstance()) {
+            return 200;
+        } else if (stack.getItem() == ItemName.diamond_drill.getInstance()) {
+            return 50;
+        } else if (stack.getItem() == ItemName.iridium_drill.getInstance()) {
+            return 20;
+        } else if (stack.getItem() == GravitechItems.advancedDrill) {
+            return 10;
+        } else {
+            throw new IllegalArgumentException("Invalid drill: " + StackUtil.toStringSafe(stack));
+        }
+    }
+
+    public boolean breakBlock(ItemStack stack, World world, BlockPos pos, IBlockState state) {
+        if (stack.getItem() == ItemName.drill.getInstance()) {
+            return this.tryUsePower(stack, 50.0D);
+        } else if (stack.getItem() == ItemName.diamond_drill.getInstance()) {
+            return this.tryUsePower(stack, 80.0D);
+        } else if (stack.getItem() == ItemName.iridium_drill.getInstance()) {
+            return this.tryUsePower(stack, 800.0D);
+        } else if (stack.getItem() == GravitechItems.advancedDrill) {
+            return this.tryUsePower(stack, 1200.D);
+        } else {
+            throw new IllegalArgumentException("Invalid drill: " + StackUtil.toStringSafe(stack));
+        }
     }
 
     public static enum DrillMode {
@@ -206,7 +251,7 @@ extends ItemDrill {
         LOW_POWER(TextFormatting.GOLD, 16.0f, 80.0),
         FINE(TextFormatting.AQUA, 10.0f, 50.0),
         BIG_HOLES(TextFormatting.LIGHT_PURPLE, 16.0f, 160.0);
-        
+
         public final String translationName;
         public final TextFormatting colour;
         public final double energyCost;
