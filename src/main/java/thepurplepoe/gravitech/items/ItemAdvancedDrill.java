@@ -2,6 +2,7 @@ package thepurplepoe.gravitech.items;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -92,11 +93,14 @@ public class ItemAdvancedDrill
     }
 
     public static Collection<BlockPos> getBrokenBlocks(EntityPlayer player, RayTraceResult ray) {
+        if (ray == null) {
+            return Collections.emptyList();
+        }
         return ItemAdvancedDrill.getBrokenBlocks(player, ray.getBlockPos(), ray.sideHit);
     }
 
     protected static Collection<BlockPos> getBrokenBlocks(EntityPlayer player, BlockPos pos, EnumFacing side) {
-        assert (side != null);
+        assert (side != null): "Side is null!";
         int xMove = 1;
         int yMove = 1;
         int zMove = 1;
