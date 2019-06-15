@@ -94,7 +94,7 @@ public class ItemAdvancedDrill
 
     public static Collection<BlockPos> getBrokenBlocks(EntityPlayer player, RayTraceResult ray) {
         if (ray == null) {
-            return Collections.emptyList();
+            return new ArrayList<BlockPos>();
         }
         return ItemAdvancedDrill.getBrokenBlocks(player, ray.getBlockPos(), ray.sideHit);
     }
